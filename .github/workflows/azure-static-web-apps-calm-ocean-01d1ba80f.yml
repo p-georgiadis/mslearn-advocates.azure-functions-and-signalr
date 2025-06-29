@@ -1,5 +1,4 @@
-name: Azure Static Web Apps CI/CD
-
+name: Client - Azure Static Web Apps CI/CD
 on:
   push:
     branches:
@@ -19,6 +18,12 @@ jobs:
         with:
           submodules: true
           lfs: false
+
+      # Debug only - Did GitHub Actions variable get into workflow correctly?
+      - name: Echo
+        run: |
+          echo "BACKEND_URL: ${{ vars.BACKEND_URL }}"
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -32,6 +37,9 @@ jobs:
           api_location: "" # Api source code path - optional
           output_location: "dist" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+        env:
+          # Environment variables can be set here or in the Azure portal
+          BACKEND_URL: ${{ vars.BACKEND_URL }} # This variable is used by the client to connect to the backend API
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
